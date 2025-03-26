@@ -4,82 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Generator</title>
-    
-    <!-- Load PyScript -->
-    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        input, button {
-            margin: 10px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        #output {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            color: green;
-        }
-    </style>
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
 <body>
 
-    <h1>Password Generator</h1>
+    <h2>Password Generator 🔐</h2>
 
-    <label>Length of Password:</label>
-    <input type="number" id="length_of_pass" value="12"><br>
+    <label>Password Length:</label>
+    <input type="number" id="length" value="12"><br><br>
 
-    <label>Number of Symbols:</label>
-    <input type="number" id="symbol_counts" value="2"><br>
+    <label>Symbols Count:</label>
+    <input type="number" id="symbols" value="2"><br><br>
 
-    <label>Number of Numbers:</label>
-    <input type="number" id="number_count" value="3"><br>
+    <label>Numbers Count:</label>
+    <input type="number" id="numbers" value="3"><br><br>
 
     <button py-click="generate_password">Generate Password</button>
 
+    <h3>Generated Password:</h3>
     <p id="output"></p>
 
     <py-script>
-import random
+        import random
 
-def generate_password():
-    length_of_pass = int(Element("length_of_pass").value)
-    symbol_counts = int(Element("symbol_counts").value)
-    number_count = int(Element("number_count").value)
+        def generate_password():
+            length_of_pass = int(Element("length").value)
+            symbol_counts = int(Element("symbols").value)
+            number_count = int(Element("numbers").value)
 
-    alphabets_list = [
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-    ]
+            alphabets_list = list("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            symbols_list = list("!@#$%^&*()-")
+            number_list = list("0123456789")
 
-    symbols_list = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-']
-    number_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            length_of_alphabets = length_of_pass - (symbol_counts + number_count)
 
-    length_of_alphabets = length_of_pass - (symbol_counts + number_count)
+            password = (
+                random.choices(alphabets_list, k=length_of_alphabets) +
+                random.choices(symbols_list, k=symbol_counts) +
+                random.choices(number_list, k=number_count)
+            )
 
-    password = []
+            random.shuffle(password)
+            password_final = "".join(password)
+            Element("output").write(password_final)
 
-    for i in range(length_of_alphabets):
-        password.append(random.choice(alphabets_list))
-
-    for i in range(symbol_counts):
-        password.append(random.choice(symbols_list))
-
-    for i in range(number_count):
-        password.append(str(random.choice(number_list)))
-
-    random.shuffle(password)
-
-    password_final = ''.join(password)
-    
-    Element("output").write(f"Generated Password: {password_final}")
     </py-script>
 
 </body>
